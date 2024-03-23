@@ -42,29 +42,6 @@ function move(direction) {
     }
 
     if (isVictory()) setup();
-
-
-
-    /*    if (direction == "left" && isMovable(currentPos[0] - 1, currentPos[1])) {
-            drawTile(currentPos[0], currentPos[1], "green");
-            drawTile(currentPos[0] - 1, currentPos[1], "yellow");
-            return;
-        }
-        if (direction == "up" && isMovable(currentPos[0], currentPos[1] - 1)) {
-            drawTile(currentPos[0], currentPos[1], "green");
-            drawTile(currentPos[0], currentPos[1] - 1, "yellow");
-            return;
-        }
-        if (direction == "right" && isMovable(currentPos[0] + 1, currentPos[1])) {
-            drawTile(currentPos[0], currentPos[1], "green");
-            drawTile(currentPos[0] + 1, currentPos[1], "yellow");
-            return;
-        }
-        if (direction == "down" && isMovable(currentPos[0], currentPos[1] + 1)) {
-            drawTile(currentPos[0], currentPos[1], "green");
-            drawTile(currentPos[0], currentPos[1] + 1, "yellow");
-            return;
-        }*/
 }
 
 /* given a starting set of x/y coordinates and a path length, draws a path
@@ -89,17 +66,9 @@ function drawPath(startX, startY, length) {
 function findNextStep(x, y) {
     choices = [];
     if (isValid(x - 1, y)) choices.push([x - 1, y]);
-    //if (isPreferred(x - 1, y)) choices.push([x - 1, y]);
-
     if (isValid(x + 1, y)) choices.push([x + 1, y]);
-    //if (isPreferred(x + 1, y)) choices.push([x + 1, y]);
-
     if (isValid(x, y - 1)) choices.push([x, y - 1]);
-    //if (isPreferred(x, y - 1)) choices.push([x, y - 1]);
-
     if (isValid(x, y + 1)) choices.push([x, y + 1]);
-    //if (isPreferred(x, y + 1)) choices.push([x, y + 1]);
-
     return choices[Math.floor(Math.random() * choices.length)];
 }
 
@@ -107,14 +76,6 @@ function findNextStep(x, y) {
     for a path to be drawn, it must be in the board and be gray */
 function isValid(x, y) {
     return x >= 0 && y >= 0 && x < board.length && y < board[x].length && board[x][y] == "gray";
-}
-
-function isPreferred(x, y) {
-    return x >= 0 && y >= 0 && x < board.length && y < board[x].length && board[x][y] == "gray" &&
-        board[x - 2][y] != undefined && board[x - 2][y] != "blue" &&
-        board[x + 2][y] != undefined && board[x + 2][y] != "blue" &&
-        board[x][y - 2] != undefined && board[x][y - 2] != "blue" &&
-        board[x][y + 2] != undefined && board[x][y + 2] != "blue";
 }
 
 function isMovable(x, y) {
