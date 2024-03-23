@@ -1,10 +1,12 @@
 // Written by Alex Manno
 
-const CANVAS_WIDTH = 490
-const CANVAS_HEIGHT = 490
+const CANVAS_WIDTH = 490;
+const CANVAS_HEIGHT = 490;
 
-const NUM_TILES_WIDE = 10
-const NUM_TILES_HIGH = 10
+const NUM_TILES_WIDE = 10;
+const NUM_TILES_HIGH = 10;
+
+const PATH_LENGTH = 15;
 
 document.onkeydown = checkKey;
 var direction;
@@ -52,9 +54,10 @@ function drawPath(startX, startY, length) {
     var y = startY;
     var nextStep;
     for (var i = 0; i < length; i++) {
-        nextStep = path[path.push(findNextStep(x, y)) - 1];
-        if (nextStep == undefined) break; // if path can't continue, end path here
+        path.push(findNextStep(x, y));
+        nextStep = path[path.length - 1];
         drawTile(x, y, "blue"); // draw current tile blue
+        if (nextStep == undefined) break; // if path can't continue, end path here
         x = nextStep[0]; // set up x coordinate for next step
         y = nextStep[1]; // set up y coordinate for next step
     }
@@ -88,7 +91,7 @@ function setup() {
             drawTile(i, j, "gray");
         }
     }
-    drawPath(currentPos[0], currentPos[1], 15);
+    drawPath(currentPos[0], currentPos[1], PATH_LENGTH);
 }
 
 /* returns true if path has been cleared, returns false if path hasn't been cleared */
