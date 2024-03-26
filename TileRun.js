@@ -6,7 +6,7 @@ const CANVAS_HEIGHT = 490;
 const NUM_TILES_WIDE = 10;
 const NUM_TILES_HIGH = 10;
 
-const PATH_LENGTH = 15;
+const PATH_LENGTH = 65;
 
 const EMPTY_TILE = "gray";
 const UNTRAVERSED_PATH_TILE = "blue";
@@ -55,18 +55,29 @@ function move(direction) {
 /* given a starting set of x/y coordinates and a path length, creates a path
     of the given length starting at the given set of coordinates */
 function createPath(startX, startY, length) {
-    var path = []; // path to be drawn
-    var x = startX;
-    var y = startY;
+    var path; // path to be drawn
     var nextStep;
+    var x;
+    var y;
+    var numAttempts = 1;
     for (var i = 0; i < length; i++) {
+        if (i == 0) {
+            path = [];
+            nextStep = [startX, startY];
+        }
+        x = nextStep[0]; // set up x coordinate for next step
+        y = nextStep[1]; // set up y coordinate for next step
         path.push(findNextStep(x, y));
         nextStep = path[path.length - 1];
         updateTile(x, y, UNTRAVERSED_PATH_TILE); // draw current tile blue
-        if (nextStep == undefined) break; // if path can't continue, end path here
-        x = nextStep[0]; // set up x coordinate for next step
-        y = nextStep[1]; // set up y coordinate for next step
+        if (nextStep == undefined) { // if path can't continue but is less than specified length, restart path
+            clearBoard();
+            numAttempts++;
+            i = -1;
+        }
     }
+    debugPathLength(path);
+    debugPathAttempts(numAttempts);
     updateTile(startX, startY, PLAYER_TILE); // initiate starting position
     prevPos = []; // clear out previous position
     drawGame();
@@ -92,12 +103,16 @@ function isMovable(x, y) {
     return x >= 0 && y >= 0 && x < board.length && y < board[x].length && board[x][y] != EMPTY_TILE && (board[x][y] != TRAVERSED_PATH_TILE || prevPos[prevPos.length - 1] == [x, y]);
 }
 
-function setup() {
+function clearBoard() {
     for (var i = 0; i < NUM_TILES_WIDE; i++) {
         for (var j = 0; j < NUM_TILES_HIGH; j++) {
             updateTile(i, j, EMPTY_TILE);
         }
     }
+}
+
+function setup() {
+    clearBoard();
     createPath(currentPos[0], currentPos[1], PATH_LENGTH);
 }
 
@@ -131,3 +146,30 @@ function drawGame() {
         }
     }
 }
+
+function debugGame() {
+    var body = document.querySelector("body");
+    var debugAreaPathLength = document.createElement("div");
+    debugAreaPathLength.setAttribute("id", "debug-area-path-length");
+    body.append(debugAreaPathLength);
+    var debugAreaPathAttempts = document.createElement("div");
+    debugAreaPathAttempts.setAttribute("id", "debug-area-path-attempts");
+    body.append(debugAreaPathAttempts);
+    //body.append("<div id='debug-area'></div>");
+}
+
+function debugPathLength(path) {
+    var debugArea = document.querySelector("#debug-area-path-length");
+    var debugMessage = "Current path length: " + path.length;
+    debugArea.textContent = debugMessage;
+    console.log(debugMessage);
+}
+
+function debugPathAttempts(numAttempts) {
+    var debugArea = document.querySelector("#debug-area-path-attempts");
+    var debugMessage = "Number of attempts to achieve this path length: " + numAttempts;
+    debugArea.textContent = debugMessage;
+    console.log(debugMessage);
+}
+
+debugGame();
